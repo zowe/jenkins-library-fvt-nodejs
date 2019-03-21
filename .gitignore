@@ -59,3 +59,7 @@ typings/
 
 # next.js build output
 .next
+
+# jest test result
+__tests__/__results__
+
