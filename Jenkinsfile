@@ -12,7 +12,7 @@
 def opts = []
 // define custom build parameters
 def customParameters = []
-customParameters.push(credentials(
+customParameters.push(string(
   name: 'LIBRARY_BRANCH',
   description: 'Jenkins library branch to test',
   defaultValue: '',
