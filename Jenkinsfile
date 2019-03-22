@@ -8,7 +8,7 @@
  * Copyright Contributors to the Zowe Project.
  */
 
-node('ca-jenkins-agent') {
+node('ibm-jenkins-slave-nvm') {
     def branch = ""
     
     try {
