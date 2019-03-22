@@ -8,15 +8,32 @@
  * Copyright Contributors to the Zowe Project.
  */
 
+
+def opts = []
+// define custom build parameters
+def customParameters = []
+customParameters.push(credentials(
+  name: 'LIBRARY_BRANCH',
+  description: 'Jenkins library branch to test',
+  defaultValue: '',
+  trim: true
+))
+opts.push(parameters(customParameters))
+
+// set build properties
+properties(opts)
+
 node('ibm-jenkins-slave-nvm') {
-    def branch = ""
-    
-    try {
-        branch = CHANGE_BRANCH
-    } catch (MissingPropertyException e) {
-        branch = BRANCH_NAME
+    def branch = 'master'
+
+    if (params.LIBRARY_BRANCH) {
+        branch = params.LIBRARY_BRANCH
+    } else if (env.CHANGE_BRANCH) {
+        branch = env.CHANGE_BRANCH
+    } else if (env.BRANCH_NAME) {
+        branch = env.BRANCH_NAME
     }
-    
+
     def lib = library("shared-pipelines@$branch").org.zowe.pipelines.nodejs
     
     def nodejs = lib.NodeJSPipeline.new(this)
