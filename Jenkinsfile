@@ -12,6 +12,11 @@
 def opts = []
 // define custom build parameters
 def customParameters = []
+customParameters.push(booleanParam(
+  name: 'FETCH_PARAMETER_ONLY',
+  description: 'By default, the pipeline will exit just for fetching parameters.',
+  defaultValue: true
+))
 customParameters.push(string(
   name: 'LIBRARY_BRANCH',
   description: 'Jenkins library branch to test',
@@ -24,6 +29,10 @@ opts.push(parameters(customParameters))
 properties(opts)
 
 node('ibm-jenkins-slave-nvm') {
+    if (params.FETCH_PARAMETER_ONLY) {
+        error "Exit after fetching parameters."
+    }
+
     def branch = 'master'
 
     if (params.LIBRARY_BRANCH) {
