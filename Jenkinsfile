@@ -48,7 +48,7 @@ node('ibm-jenkins-slave-nvm') {
     
     def nodejs = lib.NodeJSPipeline.new(this)
 
-    nodejs.admins.add("wrich04", "zfernand0","markackert")
+    nodejs.admins.add("jackjia")
 
     nodejs.protectedBranches.addMap(
        name: "master"
