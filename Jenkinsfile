@@ -44,7 +44,7 @@ node('ibm-jenkins-slave-nvm') {
     }
 
     echo "Jenkins library branch $branch will be used to build."
-    def lib = library("jenkins-library@$branch").org.zowe.pipelines.nodejs
+    def lib = library("jenkins-library@$branch").org.zowe.jenkins_shared_library.pipelines.nodejs
     
     def nodejs = lib.NodeJSPipeline.new(this)
 
