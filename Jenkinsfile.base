@@ -54,11 +54,6 @@ node('ibm-jenkins-slave-nvm') {
        name: "master"
     )
 
-    pipeline.gitConfig = [
-        email: 'zowe.robot@gmail.com',
-        credentialsId: 'zowe-robot-github'
-    ]
-
     pipeline.setup()
 
     pipeline.end()
