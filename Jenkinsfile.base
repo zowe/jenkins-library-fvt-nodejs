@@ -8,21 +8,26 @@
  * Copyright Contributors to the Zowe Project.
  */
 
+// this allows next build use specify library branch to test
 if (params.FETCH_PARAMETER_ONLY) {
     echo "Exit after fetching parameters."
     currentBuild.result = 'NOT_BUILD'
     return
 }
-
-def branch = 'master'
-if (params.LIBRARY_BRANCH) {
-    branch = params.LIBRARY_BRANCH
+// always require LIBRARY_BRANCH to be set explicitly
+if (!params.LIBRARY_BRANCH) {
+    error 'LIBRARY_BRANCH parameter is required to start the test pipeline'
 }
-
-echo "Jenkins library branch $branch will be used to build."
-def lib = library("jenkins-library@$branch").org.zowe.jenkins_shared_library
+echo "Jenkins library branch ${params.LIBRARY_BRANCH} will be used to build."
+def lib = library("jenkins-library@${params.LIBRARY_BRANCH}").org.zowe.jenkins_shared_library
 
 node('ibm-jenkins-slave-nvm') {
+    stage('before-all') {
+        echo "before all started"
+        sh 'env'
+        echo "before all ended"
+    }
+
     def pipeline = lib.pipelines.base.Pipeline.new(this)
 
     // define customized parameters
@@ -32,7 +37,6 @@ node('ibm-jenkins-slave-nvm') {
         description: 'By default, the pipeline will exit just for fetching parameters.',
         defaultValue: true
     ))
-
     pipeline.addBuildParameter(string(
         name: 'LIBRARY_BRANCH',
         description: 'Jenkins library branch to test',
@@ -47,6 +51,16 @@ node('ibm-jenkins-slave-nvm') {
     )
 
     pipeline.setup()
+
+    pipeline.createStage(
+        name: "CustomStage",
+        isSkippable: true,
+        stage: {
+            echo "This is a custom stage, skippable"
+        },
+        timeout: [time: 1, unit: 'MINUTES'],
+        resultThreshold: ResultEnum.FAILURE
+    )
 
     pipeline.end()
 }
