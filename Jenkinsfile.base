@@ -58,8 +58,7 @@ node('ibm-jenkins-slave-nvm') {
         stage: {
             echo "This is a custom stage, skippable"
         },
-        timeout: [time: 1, unit: 'MINUTES'],
-        resultThreshold: ResultEnum.FAILURE
+        timeout: [time: 1, unit: 'MINUTES']
     )
 
     pipeline.end()
