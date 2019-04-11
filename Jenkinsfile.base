@@ -34,7 +34,7 @@ properties(opts)
  * This check is only required for running integration test
  */
 if (params.FETCH_PARAMETER_ONLY) {
-    echo "Exit after fetching parameters."
+    echo "WPrematurely exit after fetching parameters."
     currentBuild.result = 'NOT_BUILD'
     return
 }
