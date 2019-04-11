@@ -8,23 +8,6 @@
  * Copyright Contributors to the Zowe Project.
  */
 
-/**
- * These 2 build parameters are only required for running integration test
- */
-def opts = []
-// define custom build parameters
-def customParameters = []
-customParameters.push(string(
-  name: 'LIBRARY_BRANCH',
-  description: 'Jenkins library branch to test',
-  defaultValue: '',
-  trim: true
-))
-opts.push(parameters(customParameters))
-
-// set build properties
-properties(opts)
-
 node('ibm-jenkins-slave-nvm') {
     /**
      * This section is only required for running integration test.
@@ -34,25 +17,14 @@ node('ibm-jenkins-slave-nvm') {
      *
      * def lib = library("jenkins-library").org.zowe.jenkins_shared_library
      */
-    def branch = 'master'
-
-    if (params.LIBRARY_BRANCH) {
-        branch = params.LIBRARY_BRANCH
-    } else if (env.CHANGE_BRANCH) {
-        branch = env.CHANGE_BRANCH
-    } else if (env.BRANCH_NAME) {
-        branch = env.BRANCH_NAME
+    if (!params.LIBRARY_BRANCH) {
+       error "LIBRARY_BRANCH parameter is missing"
     }
 
-    echo "Jenkins library branch $branch will be used to build."
-    def lib = library("jenkins-library@$branch").org.zowe.jenkins_shared_library
+    echo "Jenkins library branch ${params.LIBRARY_BRANCH} will be used to build."
+    def lib = library("jenkins-library@${params.LIBRARY_BRANCH}").org.zowe.jenkins_shared_library
 
     def pipeline = lib.pipelines.base.Pipeline.new(this)
-
-    /**
-     * These 2 build parameters are only required for running integration test
-     */
-    pipeline.addBuildParameters(customParameters)
 
     pipeline.admins.add("jackjia")
 
