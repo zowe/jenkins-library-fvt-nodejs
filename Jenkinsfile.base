@@ -8,28 +8,35 @@
  * Copyright Contributors to the Zowe Project.
  */
 
+/**
+ * These 2 build parameters are only required for running integration test
+ */
 def opts = []
 // define custom build parameters
 def customParameters = []
-def param1 = booleanParam(
+customParameters.push(booleanParam(
   name: 'FETCH_PARAMETER_ONLY',
   description: 'By default, the pipeline will exit just for fetching parameters.',
   defaultValue: true
-)
-echo "${param1.getClass()}"
-customParameters.push(param1)
-def param2 = string(
+))
+customParameters.push(string(
   name: 'LIBRARY_BRANCH',
   description: 'Jenkins library branch to test',
   defaultValue: '',
   trim: true
-)
-echo "${param2.getClass()}"
-customParameters.push(param2)
+))
 opts.push(parameters(customParameters))
 
 // set build properties
 properties(opts)
+
+/**
+ * This check is only required for running integration test
+ */
+if (params.FETCH_PARAMETER_ONLY) {
+    currentBuild.result = 'NOT_BUILD'
+    error "Exit after fetching parameters."
+}
 
 node('ibm-jenkins-slave-nvm') {
     /**
@@ -58,8 +65,7 @@ node('ibm-jenkins-slave-nvm') {
     /**
      * These 2 build parameters are only required for running integration test
      */
-    pipeline.addBuildParameter(param1)
-    pipeline.addBuildParameter(param2)
+    pipeline.addBuildParameters(customParameters)
 
     pipeline.admins.add("jackjia")
 
@@ -68,21 +74,6 @@ node('ibm-jenkins-slave-nvm') {
     )
 
     pipeline.setup()
-
-    /**
-     * This stage is only required for running integration test
-     */
-    pipeline.createStage(
-        name: "FetchParamCheck",
-        isSkippable: false,
-        stage: {
-            if (params.FETCH_PARAMETER_ONLY) {
-                currentBuild.result = 'NOT_BUILD'
-                error "Exit after fetching parameters."
-            }
-        },
-        timeout: [time: 1, unit: 'MINUTES']
-    )
 
     pipeline.createStage(
         name: "CustomStage",
