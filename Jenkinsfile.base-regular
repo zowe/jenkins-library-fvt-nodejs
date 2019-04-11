@@ -1,0 +1,75 @@
+/*
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ */
+
+/**
+ * These 2 build parameters are only required for running integration test
+ */
+def opts = []
+// define custom build parameters
+def customParameters = []
+customParameters.push(string(
+  name: 'LIBRARY_BRANCH',
+  description: 'Jenkins library branch to test',
+  defaultValue: '',
+  trim: true
+))
+opts.push(parameters(customParameters))
+
+// set build properties
+properties(opts)
+
+node('ibm-jenkins-slave-nvm') {
+    /**
+     * This section is only required for running integration test.
+     *
+     * In real consumption of library, we should use default library branch. For
+     * example:
+     *
+     * def lib = library("jenkins-library").org.zowe.jenkins_shared_library
+     */
+    def branch = 'master'
+
+    if (params.LIBRARY_BRANCH) {
+        branch = params.LIBRARY_BRANCH
+    } else if (env.CHANGE_BRANCH) {
+        branch = env.CHANGE_BRANCH
+    } else if (env.BRANCH_NAME) {
+        branch = env.BRANCH_NAME
+    }
+
+    echo "Jenkins library branch $branch will be used to build."
+    def lib = library("jenkins-library@$branch").org.zowe.jenkins_shared_library
+
+    def pipeline = lib.pipelines.base.Pipeline.new(this)
+
+    /**
+     * These 2 build parameters are only required for running integration test
+     */
+    pipeline.addBuildParameters(customParameters)
+
+    pipeline.admins.add("jackjia")
+
+    pipeline.protectedBranches.addMap(
+       name: "master"
+    )
+
+    pipeline.setup()
+
+    pipeline.createStage(
+        name: "CustomStage",
+        isSkippable: true,
+        stage: {
+            echo "This is a custom stage, skippable"
+        },
+        timeout: [time: 1, unit: 'MINUTES']
+    )
+
+    pipeline.end()
+}
