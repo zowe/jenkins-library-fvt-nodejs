@@ -30,16 +30,15 @@ opts.push(parameters(customParameters))
 // set build properties
 properties(opts)
 
-node('ibm-jenkins-slave-nvm') {
-    /**
-     * This check is only required for running integration test
-     */
-    if (params.FETCH_PARAMETER_ONLY) {
-        echo "Prematurely exit after fetching parameters."
-        currentBuild.result = 'NOT_BUILD'
-        return
-    }
+/**
+ * This check is only required for running integration test
+ */
+if (params.FETCH_PARAMETER_ONLY) {
+    currentBuild.result = 'NOT_BUILD'
+    error "Prematurely exit after fetching parameters."
+}
 
+node('ibm-jenkins-slave-nvm') {
     /**
      * This section is only required for running integration test.
      *
