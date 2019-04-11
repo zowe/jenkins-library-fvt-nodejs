@@ -8,24 +8,33 @@
  * Copyright Contributors to the Zowe Project.
  */
 
-// this allows next build use specify library branch to test
-if (params.FETCH_PARAMETER_ONLY) {
-    echo "Exit after fetching parameters."
-    currentBuild.result = 'NOT_BUILD'
-    return
-}
-// always require LIBRARY_BRANCH to be set explicitly
-if (!params.LIBRARY_BRANCH) {
-    error 'LIBRARY_BRANCH parameter is required to start the test pipeline'
-}
-echo "Jenkins library branch ${params.LIBRARY_BRANCH} will be used to build."
-def lib = library("jenkins-library@${params.LIBRARY_BRANCH}").org.zowe.jenkins_shared_library
-
 node('ibm-jenkins-slave-nvm') {
+    /**
+     * This section is only required for running integration test.
+     *
+     * In real consumption of library, we should use default library branch. For
+     * example:
+     *
+     * def lib = library("jenkins-library").org.zowe.jenkins_shared_library
+     */
+    def branch = 'master'
+
+    if (params.LIBRARY_BRANCH) {
+        branch = params.LIBRARY_BRANCH
+    } else if (env.CHANGE_BRANCH) {
+        branch = env.CHANGE_BRANCH
+    } else if (env.BRANCH_NAME) {
+        branch = env.BRANCH_NAME
+    }
+
+    echo "Jenkins library branch $branch will be used to build."
+    def lib = library("jenkins-library@$branch").org.zowe.jenkins_shared_library
+
     def pipeline = lib.pipelines.base.Pipeline.new(this)
 
-    // define customized parameters
-    // This is special for integration test
+    /**
+     * These 2 build parameters are only required for running integration test
+     */
     pipeline.addBuildParameter(booleanParam(
         name: 'FETCH_PARAMETER_ONLY',
         description: 'By default, the pipeline will exit just for fetching parameters.',
@@ -45,6 +54,21 @@ node('ibm-jenkins-slave-nvm') {
     )
 
     pipeline.setup()
+
+    /**
+     * This stage is only required for running integration test
+     */
+    pipeline.createStage(
+        name: "FetchParamCheck",
+        isSkippable: false,
+        stage: {
+            if (params.FETCH_PARAMETER_ONLY) {
+                currentBuild.result = 'NOT_BUILD'
+                error "Exit after fetching parameters."
+            }
+        },
+        timeout: [time: 1, unit: 'MINUTES']
+    )
 
     pipeline.createStage(
         name: "CustomStage",
