@@ -16,7 +16,7 @@ def param1 = booleanParam(
   description: 'By default, the pipeline will exit just for fetching parameters.',
   defaultValue: true
 )
-echo "${param1}"
+echo "${param1.getClass()}"
 customParameters.push(param1)
 def param2 = string(
   name: 'LIBRARY_BRANCH',
@@ -24,7 +24,7 @@ def param2 = string(
   defaultValue: '',
   trim: true
 )
-echo "${param2}"
+echo "${param2.getClass()}"
 customParameters.push(param2)
 opts.push(parameters(customParameters))
 
