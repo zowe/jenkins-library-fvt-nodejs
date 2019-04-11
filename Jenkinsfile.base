@@ -8,6 +8,29 @@
  * Copyright Contributors to the Zowe Project.
  */
 
+def opts = []
+// define custom build parameters
+def customParameters = []
+def param1 = booleanParam(
+  name: 'FETCH_PARAMETER_ONLY',
+  description: 'By default, the pipeline will exit just for fetching parameters.',
+  defaultValue: true
+)
+echo "${param1}"
+customParameters.push(param1)
+def param2 = string(
+  name: 'LIBRARY_BRANCH',
+  description: 'Jenkins library branch to test',
+  defaultValue: '',
+  trim: true
+)
+echo "${param2}"
+customParameters.push(param2)
+opts.push(parameters(customParameters))
+
+// set build properties
+properties(opts)
+
 node('ibm-jenkins-slave-nvm') {
     /**
      * This section is only required for running integration test.
@@ -35,17 +58,8 @@ node('ibm-jenkins-slave-nvm') {
     /**
      * These 2 build parameters are only required for running integration test
      */
-    pipeline.addBuildParameter(booleanParam(
-        name: 'FETCH_PARAMETER_ONLY',
-        description: 'By default, the pipeline will exit just for fetching parameters.',
-        defaultValue: true
-    ))
-    pipeline.addBuildParameter(string(
-        name: 'LIBRARY_BRANCH',
-        description: 'Jenkins library branch to test',
-        defaultValue: '',
-        trim: true
-    ))
+    pipeline.addBuildParameter(param1)
+    pipeline.addBuildParameter(param2)
 
     pipeline.admins.add("jackjia")
 
