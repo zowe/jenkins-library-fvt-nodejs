@@ -110,7 +110,7 @@ node('ibm-jenkins-slave-nvm') {
             coberturaReportFile       : "${UNIT_TEST_ROOT}/unit/coverage/cobertura-coverage.xml"
         ],
         htmlReports   : [
-            [dir: "${UNIT_TEST_ROOT}/jest-stare", files: "index.html", name: "Report: Jest"],
+            [dir: "${UNIT_TEST_ROOT}/jest-stare", files: "index.html", name: "Report: Jest Stare"],
             [dir: "${UNIT_TEST_ROOT}", files: "results.html", name: "Report: Unit Test"],
             [dir: "${UNIT_TEST_ROOT}/unit/coverage/lcov-report", files: "index.html", name: "Report: Code Coverage"],
         ],
