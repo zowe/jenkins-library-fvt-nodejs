@@ -75,13 +75,37 @@ node('ibm-jenkins-slave-nvm') {
 
     pipeline.setup()
 
+    pipeline.build(
+        timeout       : [time: 5, unit: 'MINUTES'],
+        operation     : {
+            sh "npm run build"
+        }
+    )
+
     pipeline.createStage(
-        name: "CustomStage",
-        isSkippable: true,
-        stage: {
+        name          : "CustomStage",
+        isSkippable   : true,
+        stage         : {
             echo "This is a custom stage, skippable"
         },
         timeout: [time: 1, unit: 'MINUTES']
+    )
+
+    def UNIT_TEST_ROOT = "__tests__/__results__/unit"
+
+    pipeline.test(
+        name          : "Unit",
+        operation     : {
+            sh "npm run test:unit"
+        },
+        junit         : "${UNIT_TEST_ROOT}/junit.xml",
+        cobertura     : [
+            coberturaReportFile: "${UNIT_TEST_ROOT}/coverage/cobertura-coverage.xml"
+        ],
+        htmlReports   : [
+            [dir: "${UNIT_TEST_ROOT}", files: "results.html", name: "Mock Project: Unit Test Report"],
+            [dir: "${UNIT_TEST_ROOT}/coverage/lcov-report", files: "index.html", name: "Mock Project: Code Coverage Report"],
+        ],
     )
 
     pipeline.end()
