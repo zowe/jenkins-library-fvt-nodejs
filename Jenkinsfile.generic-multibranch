@@ -91,20 +91,23 @@ node('ibm-jenkins-slave-nvm') {
         timeout: [time: 1, unit: 'MINUTES']
     )
 
-    def UNIT_TEST_ROOT = "__tests__/__results__/unit"
+    def UNIT_TEST_ROOT = "__tests__/__results__"
 
     pipeline.test(
         name          : "Unit",
         operation     : {
             sh "npm run test:unit"
         },
-        junit         : "${UNIT_TEST_ROOT}/junit.xml",
+        junit         : "${UNIT_TEST_ROOT}/unit/junit.xml",
         cobertura     : [
-            coberturaReportFile: "${UNIT_TEST_ROOT}/coverage/cobertura-coverage.xml"
+            // do not mark as UNSTABLE if not pass the requirement
+            autoUpdateStability: false,
+            coberturaReportFile: "${UNIT_TEST_ROOT}/unit/coverage/cobertura-coverage.xml"
         ],
         htmlReports   : [
-            [dir: "${UNIT_TEST_ROOT}", files: "results.html", name: "Mock Project: Unit Test Report"],
-            [dir: "${UNIT_TEST_ROOT}/coverage/lcov-report", files: "index.html", name: "Mock Project: Code Coverage Report"],
+            [dir: "${UNIT_TEST_ROOT}/jest-stare", files: "index.html", name: "Report: Jest"],
+            [dir: "${UNIT_TEST_ROOT}", files: "results.html", name: "Report: Unit Test"],
+            [dir: "${UNIT_TEST_ROOT}/unit/coverage/lcov-report", files: "index.html", name: "Report: Code Coverage"],
         ],
     )
 

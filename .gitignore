@@ -63,3 +63,5 @@ typings/
 # jest test result
 __tests__/__results__
 
+# Mac
+.DS_Store
