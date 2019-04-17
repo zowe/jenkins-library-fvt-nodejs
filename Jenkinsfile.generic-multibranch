@@ -133,5 +133,20 @@ node('ibm-jenkins-slave-nvm') {
         ]
     )
 
+    pipeline.createStage(
+        name          : "Verify Artifact Uploaded",
+        isSkippable   : true,
+        stage         : {
+            def artifactory = pipeline.getArtifactory()
+            def artifact = artifactory.getArtifact(
+                    pattern        : 'test-commit-*',
+                    'build-name'   : env.JOB_NAME,
+                    'build-number' : env.BUILD_NUMBER,
+                )
+            echo "Found artifact: ${artifact}"
+        },
+        timeout: [time: 5, unit: 'MINUTES']
+    )
+
     pipeline.end()
 }
