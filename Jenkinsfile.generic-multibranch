@@ -73,6 +73,11 @@ node('ibm-jenkins-slave-nvm') {
        name: "master"
     )
 
+    pipeline.configureArtifactory([
+      url           : 'https://gizaartifactory.jfrog.io/gizaartifactory',
+      credentialsId : 'GizaArtifactory',
+    ])
+
     pipeline.setup()
 
     pipeline.build(
@@ -114,6 +119,12 @@ node('ibm-jenkins-slave-nvm') {
             [dir: "${UNIT_TEST_ROOT}", files: "results.html", name: "Report: Unit Test"],
             [dir: "${UNIT_TEST_ROOT}/unit/coverage/lcov-report", files: "index.html", name: "Report: Code Coverage"],
         ],
+    )
+
+    pipeline.publish(
+        artifacts: [
+          'test-commit'
+        ]
     )
 
     pipeline.end()
