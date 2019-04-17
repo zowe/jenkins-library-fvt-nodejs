@@ -68,7 +68,7 @@ node('ibm-jenkins-slave-nvm') {
     pipeline.addBuildParameters(customParameters)
 
     pipeline.admins.add("jackjia")
-    pipeline.setPackageName('org.zowe.jenkins-library-fvt.nodejs')
+    pipeline.setPackageName('org.zowe.jenkins-library-test.nodejs')
     pipeline.protectedBranches.addMap(
        name: "master"
     )
