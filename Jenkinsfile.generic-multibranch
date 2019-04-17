@@ -140,7 +140,7 @@ node('ibm-jenkins-slave-nvm') {
             def artifactory = pipeline.getArtifactory()
             def artifact = artifactory.getArtifact(
                 // this should be a snapshot publish because we are not do a release
-                pattern        : "${lib.artifact.JFrogArtifactory.REPOSITORY_SNAPSHOT}/**/test-commit-*",
+                pattern        : "${lib.artifact.JFrogArtifactory.new(this).REPOSITORY_SNAPSHOT}/**/test-commit-*",
                 'build-name'   : env.JOB_NAME,
                 'build-number' : env.BUILD_NUMBER,
             )
