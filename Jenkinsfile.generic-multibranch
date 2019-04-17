@@ -64,6 +64,8 @@ node('ibm-jenkins-slave-nvm') {
     def npm = lib.npm.Registry.new(this)
     def packageInfo = npm.getPackageInfo()
 
+    echo "Package info: ${packageInfo}"
+
     /**
      * These 2 build parameters are only required for running integration test
      */
