@@ -61,10 +61,6 @@ node('ibm-jenkins-slave-nvm') {
     def lib = library("jenkins-library@$branch").org.zowe.jenkins_shared_library
 
     def pipeline = lib.pipelines.generic.GenericPipeline.new(this)
-    def npm = lib.npm.Registry.new(this)
-    def packageInfo = npm.getPackageInfo()
-
-    echo "Package info: ${packageInfo}"
 
     /**
      * These 2 build parameters are only required for running integration test
@@ -73,7 +69,6 @@ node('ibm-jenkins-slave-nvm') {
 
     pipeline.admins.add("jackjia")
     pipeline.setPackageName('org.zowe.jenkins-library-fvt.nodejs')
-    pipeline.setVersion(packageInfo['version'])
     pipeline.protectedBranches.addMap(
        name: "master"
     )
@@ -127,8 +122,14 @@ node('ibm-jenkins-slave-nvm') {
     )
 
     pipeline.publish(
+        operation: {
+            // get current version, which is required by uploading artifacts
+            def npm = lib.npm.Registry.new(this)
+            def packageInfo = npm.getPackageInfo()
+            pipeline.setVersion(packageInfo['version'])
+        },
         artifacts: [
-          'test-commit'
+            'test-commit'
         ]
     )
 
