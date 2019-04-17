@@ -139,11 +139,12 @@ node('ibm-jenkins-slave-nvm') {
         stage         : {
             def artifactory = pipeline.getArtifactory()
             def artifact = artifactory.getArtifact(
-                    pattern        : 'test-commit-*',
-                    'build-name'   : env.JOB_NAME,
-                    'build-number' : env.BUILD_NUMBER,
-                )
-            echo "Found artifact: ${artifact}"
+                // this should be a snapshot publish because we are not do a release
+                pattern        : "${lib.artifact.JFrogArtifactory.REPOSITORY_SNAPSHOT}/**/test-commit-*",
+                'build-name'   : env.JOB_NAME,
+                'build-number' : env.BUILD_NUMBER,
+            )
+            echo "Successfully found artifact uploaded: ${artifact}"
         },
         timeout: [time: 5, unit: 'MINUTES']
     )
