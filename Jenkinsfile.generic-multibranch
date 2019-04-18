@@ -149,5 +149,8 @@ node('ibm-jenkins-slave-nvm') {
         timeout: [time: 5, unit: 'MINUTES']
     )
 
+    // define we need release stage
+    pipeline.release()
+
     pipeline.end()
 }
