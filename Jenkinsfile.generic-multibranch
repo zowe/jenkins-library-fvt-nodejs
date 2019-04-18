@@ -77,6 +77,10 @@ node('ibm-jenkins-slave-nvm') {
       url           : 'https://gizaartifactory.jfrog.io/gizaartifactory',
       credentialsId : 'GizaArtifactory',
     ])
+    pipeline.configureGitHub([
+      email         : 'zowe.robot@gmail.com',
+      credentialsId : 'zowe-robot-github',
+    ])
 
     pipeline.setup()
 
