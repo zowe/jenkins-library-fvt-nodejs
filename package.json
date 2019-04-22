@@ -1,6 +1,6 @@
 {
   "name": "@zowe/jenkins-library-fvt-nodejs",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "A mock project to use when testing the shared Node JS pipeline ",
   "main": "index.js",
   "scripts": {
