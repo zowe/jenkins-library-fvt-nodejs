@@ -69,9 +69,6 @@ node('ibm-jenkins-slave-nvm') {
 
     pipeline.admins.add("jackjia")
     pipeline.setPackageName('org.zowe.jenkins-library-test.nodejs')
-    pipeline.protectedBranches.addMap(
-       name: "master"
-    )
 
     pipeline.configureArtifactory([
       url                        : 'https://gizaartifactory.jfrog.io/gizaartifactory',

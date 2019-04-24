@@ -50,10 +50,6 @@ node('ibm-jenkins-slave-nvm') {
 
     nodejs.admins.add("jackjia")
 
-    nodejs.protectedBranches.addMap(
-       name: "master"
-    )
-
     nodejs.gitConfig = [
         email: 'zowe.robot@gmail.com',
         credentialsId: 'zowe-robot-github'

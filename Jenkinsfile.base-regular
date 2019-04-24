@@ -28,10 +28,6 @@ node('ibm-jenkins-slave-nvm') {
 
     pipeline.admins.add("jackjia")
 
-    pipeline.protectedBranches.addMap(
-       name: "master"
-    )
-
     pipeline.setup()
 
     pipeline.createStage(
