@@ -8,7 +8,9 @@
  * Copyright Contributors to the Zowe Project.
  */
 
-
+/**
+ * These 2 build parameters are only required for running integration test
+ */
 def opts = []
 // define custom build parameters
 def customParameters = []
@@ -28,11 +30,23 @@ opts.push(parameters(customParameters))
 // set build properties
 properties(opts)
 
-node('ibm-jenkins-slave-nvm') {
-    if (params.FETCH_PARAMETER_ONLY) {
-        error "Exit after fetching parameters."
-    }
+/**
+ * This check is only required for running integration test
+ */
+if (params.FETCH_PARAMETER_ONLY) {
+    currentBuild.result = 'NOT_BUILT'
+    error "Prematurely exit after fetching parameters."
+}
 
+node('ibm-jenkins-slave-nvm') {
+    /**
+     * This section is only required for running integration test.
+     *
+     * In real consumption of library, we should use default library branch. For
+     * example:
+     *
+     * def lib = library("jenkins-library").org.zowe.jenkins_shared_library
+     */
     def branch = 'master'
 
     if (params.LIBRARY_BRANCH) {
@@ -44,58 +58,82 @@ node('ibm-jenkins-slave-nvm') {
     }
 
     echo "Jenkins library branch $branch will be used to build."
-    def lib = library("jenkins-library@$branch").org.zowe.jenkins_shared_library.pipelines.nodejs
-    
-    def nodejs = lib.NodeJSPipeline.new(this)
+    def lib = library("jenkins-library@$branch").org.zowe.jenkins_shared_library
 
-    nodejs.admins.add("jackjia")
+    def pipeline = lib.pipelines.generic.GenericPipeline.new(this)
 
-    nodejs.gitConfig = [
-        email: 'zowe.robot@gmail.com',
-        credentialsId: 'zowe-robot-github'
-    ]
+    /**
+     * These 2 build parameters are only required for running integration test
+     */
+    pipeline.addBuildParameters(customParameters)
 
-    nodejs.publishConfig = [
-        email: nodejs.gitConfig.email,
-        credentialsId: 'GizaArtifactory'
-    ]
+    pipeline.admins.add("jackjia")
+    pipeline.setPackageName('org.zowe.jenkins-library-test.nodejs')
 
-    nodejs.setup()
+    pipeline.configureArtifactory([
+      url                        : 'https://gizaartifactory.jfrog.io/gizaartifactory',
+      usernamePasswordCredential : 'GizaArtifactory',
+    ])
+    pipeline.configureGitHub([
+      email                      : 'zowe.robot@gmail.com',
+      usernamePasswordCredential : 'zowe-robot-github',
+    ])
+    pipeline.configurePublishRegistry([
+      email                      : 'giza-jenkins@gmail.com',
+      usernamePasswordCredential : 'giza-jenkins-basicAuth',
+    ])
+    pipeline.configureInstallRegistry([
+      email                      : 'giza-jenkins@gmail.com',
+      usernamePasswordCredential : 'giza-jenkins-basicAuth',
+      registry                   : 'https://gizaartifactory.jfrog.io/gizaartifactory/api/npm/npm-local-release/',
+      scope                      : 'zowe',
+    ])
 
-    nodejs.createStage(
-        name: "Lint",
-        stage: {
-                sh "npm run lint"
+    pipeline.setup()
+
+    // lint before build
+    pipeline.createStage(
+        name          : "Lint",
+        isSkippable   : true,
+        stage         : {
+            sh 'npm run lint'
         },
-        timeout: [
-            time: 2,
-            unit: 'MINUTES'
-        ]
+        timeout: [time: 5, unit: 'MINUTES']
     )
 
-    nodejs.build(timeout: [
-        time: 5,
-        unit: 'MINUTES',
-    ], operation:
-       {
-             sh "npm run build"
-       })
+    // we need npm build before test
+    pipeline.build()
 
-    def UNIT_TEST_ROOT = "__tests__/__results__/unit"
+    def UNIT_TEST_ROOT = "__tests__/__results__"
 
-    nodejs.test(
-        name: "Unit",
-        operation: {
+    pipeline.test(
+        name          : "Unit",
+        operation     : {
             sh "npm run test:unit"
         },
-        shouldUnlockKeyring: true,
-        testResults: [dir: "${UNIT_TEST_ROOT}", files: "results.html", name: "Mock Project: Unit Test Report"],
-        coverageResults: [dir: "${UNIT_TEST_ROOT}/coverage/lcov-report", files: "index.html", name: "Mock Project: Code Coverage Report"],
-        junitOutput: "${UNIT_TEST_ROOT}/junit.xml",
-        cobertura: [
-            coberturaReportFile: "${UNIT_TEST_ROOT}/coverage/cobertura-coverage.xml"
-        ]
+        junit         : "${UNIT_TEST_ROOT}/unit/junit.xml",
+        cobertura     : [
+            // do not mark as UNSTABLE if not pass the requirement
+            autoUpdateStability       : false,
+            fileCoverageTargets       : '0, 0, 0',
+            classCoverageTargets      : '0, 0, 0',
+            methodCoverageTargets     : '0, 0, 0',
+            lineCoverageTargets       : '0, 0, 0',
+            conditionalCoverageTargets: '0, 0, 0',
+            coberturaReportFile       : "${UNIT_TEST_ROOT}/unit/coverage/cobertura-coverage.xml"
+        ],
+        htmlReports   : [
+            [dir: "${UNIT_TEST_ROOT}/jest-stare", files: "index.html", name: "Report: Jest Stare"],
+            [dir: "${UNIT_TEST_ROOT}", files: "results.html", name: "Report: Unit Test"],
+            [dir: "${UNIT_TEST_ROOT}/unit/coverage/lcov-report", files: "index.html", name: "Report: Code Coverage"],
+        ],
     )
-    nodejs.end()
 
+    // define we need publish stage
+    pipeline.publish()
+
+    // define we need release stage
+    pipeline.release()
+
+    pipeline.end()
 }
