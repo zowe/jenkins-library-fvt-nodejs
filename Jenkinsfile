@@ -60,7 +60,7 @@ node('ibm-jenkins-slave-nvm') {
     echo "Jenkins library branch $branch will be used to build."
     def lib = library("jenkins-library@$branch").org.zowe.jenkins_shared_library
 
-    def pipeline = lib.pipelines.generic.GenericPipeline.new(this)
+    def pipeline = lib.pipelines.nodejs.NodeJSPipeline.new(this)
 
     /**
      * These 2 build parameters are only required for running integration test
