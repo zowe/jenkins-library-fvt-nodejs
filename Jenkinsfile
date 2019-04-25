@@ -110,6 +110,9 @@ node('ibm-jenkins-slave-nvm') {
         name          : "Unit",
         operation     : {
             sh "npm run test:unit"
+
+            // debug
+            sh 'git status'
         },
         junit         : "${UNIT_TEST_ROOT}/unit/junit.xml",
         cobertura     : [
