@@ -80,11 +80,11 @@ node('ibm-jenkins-slave-nvm') {
     ])
     pipeline.configurePublishRegistry([
       email                      : 'giza-jenkins@gmail.com',
-      usernamePasswordCredential : 'GizaArtifactoryEncoded',
+      tokenCredential            : 'giza-jenkins-basicAuth',
     ])
     pipeline.configureInstallRegistries([[
       email                      : 'giza-jenkins@gmail.com',
-      usernamePasswordCredential : 'GizaArtifactoryEncoded',
+      tokenCredential            : 'giza-jenkins-basicAuth',
       registry                   : 'https://gizaartifactory.jfrog.io/gizaartifactory/api/npm/npm-release/',
       // retrieve all packages (not just @zowe) from Artifactory
       // scope                      : 'zowe',
