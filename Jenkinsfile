@@ -86,8 +86,7 @@ node('ibm-jenkins-slave-nvm') {
       email                      : 'giza-jenkins@gmail.com',
       tokenCredential            : 'giza-jenkins-basicAuth',
       registry                   : 'https://gizaartifactory.jfrog.io/gizaartifactory/api/npm/npm-release/',
-      // retrieve all packages (not just @zowe) from Artifactory
-      // scope                      : 'zowe',
+      scope                      : 'zowe',
     ]])
 
     pipeline.setup(alwaysUseNpmInstall: true)
