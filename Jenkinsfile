@@ -80,11 +80,11 @@ node('ibm-jenkins-slave-nvm') {
     ])
     pipeline.configurePublishRegistry([
       email                      : 'giza-jenkins@gmail.com',
-      tokenCredential            : 'giza-jenkins-basicAuth',
+      usernamePasswordCredential : 'GizaArtifactory',
     ])
     pipeline.configureInstallRegistries([[
       email                      : 'giza-jenkins@gmail.com',
-      tokenCredential            : 'giza-jenkins-basicAuth',
+      usernamePasswordCredential : 'GizaArtifactory',
       registry                   : 'https://gizaartifactory.jfrog.io/gizaartifactory/api/npm/npm-local-release/',
       scope                      : 'zowe',
     ]])
