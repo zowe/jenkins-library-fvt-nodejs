@@ -89,7 +89,10 @@ node('ibm-jenkins-slave-nvm') {
       scope                      : 'zowe',
     ]])
 
-    pipeline.setup(alwaysUseNpmInstall: true)
+    pipeline.setup(
+      alwaysUseNpmInstall: true,
+      ignoreAuditFailure: true
+    )
 
     // lint before build
     pipeline.createStage(
