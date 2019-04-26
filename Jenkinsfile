@@ -68,30 +68,31 @@ node('ibm-jenkins-slave-nvm') {
     pipeline.addBuildParameters(customParameters)
 
     pipeline.admins.add("jackjia")
-    pipeline.setPackageName('org.zowe.jenkins-library-test.nodejs')
-
-    pipeline.configureArtifactory([
-      url                        : 'https://gizaartifactory.jfrog.io/gizaartifactory',
-      usernamePasswordCredential : 'GizaArtifactory',
-    ])
-    pipeline.configureGitHub([
-      email                      : 'zowe.robot@gmail.com',
-      usernamePasswordCredential : 'zowe-robot-github',
-    ])
-    pipeline.configurePublishRegistry([
-      email                      : 'giza-jenkins@gmail.com',
-      usernamePasswordCredential : 'GizaArtifactoryEncoded',
-    ])
-    pipeline.configureInstallRegistries([[
-      email                      : 'giza-jenkins@gmail.com',
-      usernamePasswordCredential : 'GizaArtifactoryEncoded',
-      registry                   : 'https://gizaartifactory.jfrog.io/gizaartifactory/api/npm/npm-release/',
-      scope                      : 'zowe',
-    ]])
 
     pipeline.setup(
+      packageName: 'org.zowe.jenkins-library-test.nodejs',
       alwaysUseNpmInstall: true,
-      ignoreAuditFailure: true
+      ignoreAuditFailure: true,
+      github: [
+        email                      : 'zowe.robot@gmail.com',
+        usernamePasswordCredential : 'zowe-robot-github',
+      ],
+      artifactory: [
+        url                        : 'https://gizaartifactory.jfrog.io/gizaartifactory',
+        usernamePasswordCredential : 'GizaArtifactory',
+      ],
+      installRegistries: [
+        [
+          email                      : 'giza-jenkins@gmail.com',
+          usernamePasswordCredential : 'GizaArtifactoryEncoded',
+          registry                   : 'https://gizaartifactory.jfrog.io/gizaartifactory/api/npm/npm-release/',
+          scope                      : 'zowe',
+        ]
+      ],
+      publishRegistry: [
+        email                      : 'giza-jenkins@gmail.com',
+        usernamePasswordCredential : 'GizaArtifactoryEncoded',
+      ]
     )
 
     // lint before build
