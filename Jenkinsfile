@@ -84,14 +84,14 @@ node('ibm-jenkins-slave-nvm') {
       installRegistries: [
         [
           email                      : 'giza-jenkins@gmail.com',
-          usernamePasswordCredential : 'GizaArtifactoryEncoded',
+          usernamePasswordCredential : 'GizaArtifactory',
           registry                   : 'https://gizaartifactory.jfrog.io/gizaartifactory/api/npm/npm-release/',
           scope                      : 'zowe',
         ]
       ],
       publishRegistry: [
         email                      : 'giza-jenkins@gmail.com',
-        usernamePasswordCredential : 'GizaArtifactoryEncoded',
+        usernamePasswordCredential : 'GizaArtifactory',
       ]
     )
 
