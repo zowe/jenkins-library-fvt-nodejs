@@ -78,7 +78,13 @@ node('ibm-jenkins-slave-nvm') {
         artifactory: [
             url                        : 'https://gizaartifactory.jfrog.io/gizaartifactory',
             usernamePasswordCredential : 'GizaArtifactory',
-        ]
+        ],
+        extraInit: {
+            // get current version, which is required by uploading artifacts
+            def npm = lib.npm.Registry.new(this)
+            def packageInfo = npm.getPackageInfo()
+            pipeline.setVersion(packageInfo['version'])
+        }
     )
 
     pipeline.build(
@@ -123,12 +129,6 @@ node('ibm-jenkins-slave-nvm') {
     )
 
     pipeline.publish(
-        operation: {
-            // get current version, which is required by uploading artifacts
-            def npm = lib.npm.Registry.new(this)
-            def packageInfo = npm.getPackageInfo()
-            pipeline.setVersion(packageInfo['version'])
-        },
         artifacts: [
             'test-commit.txt'
         ]
