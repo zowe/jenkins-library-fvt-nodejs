@@ -134,7 +134,9 @@ node('ibm-jenkins-slave-nvm') {
     )
 
     // define we need publish stage
-    pipeline.publish()
+    pipeline.publish(
+        allowPublishPreReleaseFromFormalReleaseBranch: true,
+    )
 
     // define we need release stage
     pipeline.release()
