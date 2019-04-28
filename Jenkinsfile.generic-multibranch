@@ -152,7 +152,13 @@ node('ibm-jenkins-slave-nvm') {
     )
 
     // define we need release stage
-    pipeline.release()
+    pipeline.release(
+        bumpVersion: {
+            echo 'Customized bump version started ...'
+            // bump patch level
+            sh 'git reset --hard && npm version patch && git push'
+        }
+    )
 
     pipeline.end()
 }
