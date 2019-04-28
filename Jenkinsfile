@@ -95,16 +95,6 @@ node('ibm-jenkins-slave-nvm') {
       ]
     )
 
-    // lint before build
-    pipeline.createStage(
-        name          : "Lint",
-        isSkippable   : true,
-        stage         : {
-            sh 'npm run lint'
-        },
-        timeout: [time: 5, unit: 'MINUTES']
-    )
-
     // we need npm build before test
     pipeline.build()
 
