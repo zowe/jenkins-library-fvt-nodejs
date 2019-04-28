@@ -156,7 +156,7 @@ node('ibm-jenkins-slave-nvm') {
         bumpVersion: {
             echo 'Customized bump version started ...'
             // bump patch level
-            sh 'git reset --hard && npm version patch && git push'
+            sh "git reset --hard && npm version patch && git push origin HEAD:${env.BRANCH_NAME}"
         }
     )
 
