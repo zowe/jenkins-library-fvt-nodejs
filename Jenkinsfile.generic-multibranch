@@ -156,7 +156,12 @@ node('ibm-jenkins-slave-nvm') {
         bumpVersion: {
             echo 'Customized bump version started ...'
             // bump patch level
-            sh "git reset --hard && npm version patch && git push origin HEAD:${env.BRANCH_NAME}"
+            sh "git reset --hard && npm version patch"
+            // amend last commit with sign-off
+            def commitMessage = sh(script: "git log -1 --pretty=%s", returnStdout: true).trim()
+            sh "git reset HEAD~1 && git add . && git commit -s -m \"${commitMessage}\""
+            // push to remote
+            sh "git push origin HEAD:${env.BRANCH_NAME}"
         }
     )
 
