@@ -128,10 +128,13 @@ node('ibm-jenkins-slave-nvm') {
         ],
     )
 
+    // default packaging operation
+    pipeline.packaging(name: 'jenkins-library-fvt-nodejs')
+
     pipeline.publish(
         allowPublishPreReleaseFromFormalReleaseBranch: true,
         artifacts: [
-            'test-commit.txt'
+            '.pax/jenkins-library-fvt-nodejs.pax'
         ]
     )
 
