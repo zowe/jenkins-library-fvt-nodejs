@@ -151,7 +151,7 @@ node('ibm-jenkins-slave-nvm') {
             def artifactory = pipeline.getArtifactory()
             def artifact = artifactory.getArtifact(
                 // this should be a snapshot publish because we are not do a release
-                pattern        : "${pipeline.isPerformingRelease() ? artifactory.REPOSITORY_RELEASE : artifactory.REPOSITORY_SNAPSHOT}/**/test-commit-*",
+                pattern        : "${pipeline.isPerformingRelease() ? artifactory.REPOSITORY_RELEASE : artifactory.REPOSITORY_SNAPSHOT}/**/jenkins-library-fvt-nodejs-*",
                 'build-name'   : env.JOB_NAME,
                 'build-number' : env.BUILD_NUMBER,
             )
