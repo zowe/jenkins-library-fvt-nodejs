@@ -63,3 +63,4 @@
 - jenkins-library-integration-tests/github-20190509165719#1
 - jenkins-library-integration-tests/github-20190509171235#1
 - jenkins-library-integration-tests/github-20190509172828#1
+- jenkins-library-integration-tests/github-20190509192702#1
