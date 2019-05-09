@@ -81,6 +81,12 @@ node('ibm-jenkins-slave-nvm') {
         url                        : 'https://gizaartifactory.jfrog.io/gizaartifactory',
         usernamePasswordCredential : 'GizaArtifactory',
       ],
+      pax: [
+        sshHost                    : 'river.zowe.org',
+        sshPort                    : 2022,
+        sshCredential              : 'ssh-zdt-test-image-guest',
+        remoteWorkspace            : '/zaas1'
+      ],
       installRegistries: [
         [
           email                      : 'giza-jenkins@gmail.com',
