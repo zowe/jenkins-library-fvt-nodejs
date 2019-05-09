@@ -37,5 +37,5 @@ mkdir -p "${PAX_WORKSPACE_DIR}/ascii"
 cp test-commit.txt "${PAX_WORKSPACE_DIR}/ascii"
 
 echo "[${SCRIPT_NAME}] ${PAX_WORKSPACE_DIR} folder is prepared:"
-find . -print
+find .pax -print
 exit 0
