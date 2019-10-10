@@ -110,3 +110,4 @@
 - jenkins-library-integration-tests/github-20191010104155#1
 - jenkins-library-integration-tests/github-20191010104657#1
 - jenkins-library-integration-tests/github-20191010104657#2
+- jenkins-library-integration-tests/github-20191010104657#3
