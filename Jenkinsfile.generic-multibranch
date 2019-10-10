@@ -93,6 +93,34 @@ node('ibm-jenkins-slave-nvm') {
         }
     )
 
+    pipeline.createStage(
+        name          : "Check Publish Path",
+        isSkippable   : true,
+        stage         : {
+            // test target publish path
+            def targetPath = pipeline.getPublishTargetPath()
+            // should be like
+            // - libs-snapshot-local/org/zowe/jenkins-library-test/nodejs/1.0.215-SNAPSHOT/
+            // - libs-release-local/org/zowe/jenkins-library-test/nodejs/1.0.215/
+            // based on if we are on a release
+            def expectedTargetPath
+            // assumptions:
+            // - test on master branch, see GenericPipelineMultibranchPipelineTest#TEST_BRANCH
+            // - package name, see packageName defined above
+            if (pipeline.isPerformingRelease()) {
+                expectedTargetPath = "libs-release-local/org/zowe/jenkins-library-test/nodejs/${pipeline.getVersion()}/"
+            } else {
+                expectedTargetPath = "libs-snapshot-local/org/zowe/jenkins-library-test/nodejs/${pipeline.getVersion()}-SNAPSHOT/"
+            }
+            if (targetPath == expectedTargetPath) {
+                echo "Target publish path \"${targetPath}\" is correct."
+            } else {
+                error "Target publish path \"${targetPath}\" is not as expected \"${expectedTargetPath}\""
+            }
+        },
+        timeout: [time: 2, unit: 'MINUTES']
+    )
+
     pipeline.build(
         timeout       : [time: 5, unit: 'MINUTES'],
         operation     : {
