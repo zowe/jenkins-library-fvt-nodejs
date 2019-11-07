@@ -71,6 +71,7 @@ node ('ibm-jenkins-slave-dind') {
 
     pipeline.setup(
         packageName: 'org.zowe.jenkins-library-test.docker',
+        githubTagPrefix: 'docker',
         docker: [
             url                        : lib.Constants.DEFAULT_DOCKER_REGISTRY_URL,
             usernamePasswordCredential : lib.Constants.DEFAULT_DOCKER_REGISTRY_CREDENTIAL,
