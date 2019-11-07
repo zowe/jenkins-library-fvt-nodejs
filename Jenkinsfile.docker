@@ -99,8 +99,10 @@ node ('ibm-jenkins-slave-dind') {
     )
 
     // default publish stage, image is "${lib.Constants.DEFAULT_DOCKER_IMAGE_PREFIX}/jenkins-library-fvt-nodejs"
-    // and tag should be latest
     pipeline.publish()
+
+    // we have release stage
+    pipeline.release()
 
     pipeline.end()
 }
