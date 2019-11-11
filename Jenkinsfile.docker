@@ -78,13 +78,7 @@ node ('ibm-jenkins-slave-dind') {
             image                      : "${lib.Constants.DEFAULT_DOCKER_IMAGE_PREFIX}/jenkins-library-fvt-nodejs".toString(),
         ],
         disableArtifactory: true,
-        disablePax:  true,
-        extraInit: {
-            // get current version, which is required by uploading artifacts
-            def npm = lib.npm.Registry.new(this)
-            def packageInfo = npm.getPackageInfo()
-            pipeline.setVersion(packageInfo['version'])
-        }
+        disablePax:  true
     )
 
     // default build stage, dockerFile is {@code "Dockerfile"}
