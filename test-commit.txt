@@ -146,3 +146,4 @@
 - jenkins-library-integration-tests/github-20200828134754#1
 - jenkins-library-integration-tests/github-20210210190950#1
 - jenkins-library-integration-tests/github-20210211203516#1
+- jenkins-library-integration-tests/github-20210211203516#1: on branch test/pr_20210211203558
