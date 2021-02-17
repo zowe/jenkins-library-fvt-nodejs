@@ -150,3 +150,4 @@
 - jenkins-library-integration-tests/github-20210211220919#1
 - jenkins-library-integration-tests/github-20210211221708#1
 - jenkins-library-integration-tests/github-20210217204749#1
+- jenkins-library-integration-tests/github-20210217204749#1: on branch test/pr_20210217204830
