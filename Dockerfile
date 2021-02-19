@@ -1,5 +1,5 @@
 FROM alpine:latest
 
-LABEL version="0.0.25"
+LABEL version="0.0.26"
 
 CMD echo "Hello Zowe"
